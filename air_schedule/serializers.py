@@ -23,6 +23,7 @@ class AirScheduleDetailUserInfoSerializer(serializers.ModelSerializer):
         model = User
         # 운항정보에 표기될 유저관련 정보를 나열합니다.
         # 일단은 이름정도만 넣기로 합시다.
+        # 더필요한 필드가있다면 명시해주시면 되요!
         fields = ("name",)
 
 
@@ -49,6 +50,7 @@ class AirScheduleDetailSerializer(serializers.ModelSerializer):
         result = AirScheduleDetailUserInfoSerializer(user, many=False).data
         return result
 
+    # 메소드필드 중요하니 연습많이 해보세요~
     userInfo = serializers.SerializerMethodField(method_name="getUserInfo")
 
     class Meta:

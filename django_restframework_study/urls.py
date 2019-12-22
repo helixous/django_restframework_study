@@ -16,6 +16,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+# URL 패턴은 다음과 같이 작성하는데,
+# 각 앱(user, air_schedule 등등)별로 urls.py를 따로 작성하신후 include해주시는게 정석입니다.
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
