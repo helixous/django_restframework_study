@@ -27,7 +27,8 @@ def registerAirSchedule(request):
     # 항상 형태검증을 할때는 시리얼라이저.is_valid()를 사용하면 됩니다.
     if requestValidator.is_valid() is False:
         # 레스트프레임워크 형태로 응답을 줄때는 Response 객체에 data와 status 인자에 값을 실어 보내면 됩니다.
-        return Response(data={"message": "잘못된 요청형식입니다.", "value": None}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(data={"message": "잘못된 요청형식입니다.", "value": None},
+                        status=status.HTTP_400_BAD_REQUEST)
 
     # 형태는 만족했지만, 존재하지 않는 유저에 대한 운항스케쥴을 생성하면 안됩니다.
     # 때문에 요청객체에서 userId 필드를 가지고 존재하는 유저인지 검증할 필요가 있습니다.
@@ -35,7 +36,8 @@ def registerAirSchedule(request):
 
     # 존재하지 않는 유저라면 운항스케쥴을 작성하면 안되겠죠?
     if not userQuerySet:
-        return Response(data={"message": "존재하지 않는 유저입니다.", "value": None}, status=status.HTTP_404_NOT_FOUND)
+        return Response(data={"message": "존재하지 않는 유저에 대해 운항스케쥴을 생성할 수 없습니다.", "value": None},
+                        status=status.HTTP_404_NOT_FOUND)
 
     # 형태를 만족했고, 존재하는 유저라면 운항스케쥴을 생성해줍니다
     airSchedule = AirSchedule.objects.create(**requestValidator.data)
@@ -46,5 +48,20 @@ def registerAirSchedule(request):
     # 운항스케쥴에 유저정보를 내포해야한다고 가정하고 중첩시리얼라이저를 적용해보겠습니다.
     # 개연성은 없겠지만 나중에 반드시 사용하실 일이 있기때문에 억지로 엮겠습니다 ㅎㅎ
     airScheduleDetail = AirScheduleDetailSerializer(airSchedule, many=False).data
-    return Response(data={"message": "성공적으로 생성되었습니다.", "value": airScheduleDetail}, status=status.HTTP_200_OK)
+    return Response(data={"message": "성공적으로 생성되었습니다.", "value": airScheduleDetail},
+                    status=status.HTTP_200_OK)
 
+
+# 운항스케쥴 리스트 API
+# 사실 스케쥴 리스트는 해당 유저의 운항스케쥴만 보여져야하지만
+# 여기서는 상관없이 모두 가져오는 로직으로 구성하겠습니다.
+# 해당 유저의 운항스케쥴만 보고싶다면 POST요청으로 user의 UUID를 받아서 작성하면 되니
+# 한번 시도해보시는것도 좋을듯 합니다 ㅎㅎ
+@api_view(["GET"])
+def getAirScheduleList(request):
+    airScheduleQuerySet = AirSchedule.objects.all()
+    # 시리얼라이저에 쿼리셋을 넣을때는 many=True를, 단수객체를 넣을때는 many=False 해주시면 됩니다.
+    airScheduleListSerializer = AirScheduleDetailSerializer(airScheduleQuerySet, many=True)
+    result = airScheduleListSerializer.data
+    return Response(data={"message": "운항스케쥴 리스트입니다.", "value": result},
+                    status=status.HTTP_200_OK)

@@ -3,4 +3,5 @@ from .views import *
 
 urlpatterns = [
     path("register-airschedule", registerAirSchedule),
+    path("get-airschedule-list", getAirScheduleList),
 ]

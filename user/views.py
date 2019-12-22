@@ -27,14 +27,16 @@ def registerUser(request):
     # 항상 형태검증을 할때는 시리얼라이저.is_valid()를 사용하면 됩니다.
     if requestValidatorSerializer.is_valid() is False:
         # 레스트프레임워크 형태로 응답을 줄때는 Response 객체에 data와 status 인자에 값을 실어 보내면 됩니다.
-        return Response(data={"message": "잘못된 요청형식입니다.", "value": None}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(data={"message": "잘못된 요청형식입니다.", "value": None},
+                        status=status.HTTP_400_BAD_REQUEST)
 
     # 형태를 만족했다면 유저정보를 생성해줍니다
     user = User.objects.create(**requestValidatorSerializer.data)
 
     # 생성된 유저객체를 필요한 형태로 시리얼라이징 해주면 됩니다.
     userInfoSerializerData = UserInfoSerializer(user, many=False).data
-    return Response(data={"message": "성공적으로 생성되었습니다.", "value": userInfoSerializerData}, status=status.HTTP_200_OK)
+    return Response(data={"message": "성공적으로 생성되었습니다.", "value": userInfoSerializerData},
+                    status=status.HTTP_200_OK)
 
 
 # api_view데코레이터는 함수형뷰 위에 작성해주시면되며,
@@ -63,7 +65,8 @@ def getUserInfo(request):
     # 유저가 존재하지않는다면 위에서 쿼리한 쿼리셋오브젝트가 비어있을겁니다.
     # 비어있다면 해당하는 api응답을 줘야겠죠?
     if not userQuerySet:
-        return Response(data={"message": "존재하지 않는 유저입니다.", "value": None}, status=status.HTTP_404_NOT_FOUND)
+        return Response(data={"message": "존재하지 않는 유저입니다.", "value": None},
+                        status=status.HTTP_404_NOT_FOUND)
 
     # 위에서 빈쿼리셋 검사를 했기때문에,
     # 쿼리셋이 비어있지 않다는것이 증명되었고,
@@ -72,4 +75,5 @@ def getUserInfo(request):
 
     # 생성된 유저객체를 필요한 형태로 시리얼라이징 해주면 됩니다.
     userInfoSerializerData = UserInfoSerializer(user, many=False).data
-    return Response(data={"message": "찾아낸 유저정보", "value": userInfoSerializerData}, status=status.HTTP_200_OK)
+    return Response(data={"message": "찾아낸 유저정보", "value": userInfoSerializerData},
+                    status=status.HTTP_200_OK)

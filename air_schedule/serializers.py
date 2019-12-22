@@ -45,7 +45,7 @@ class AirScheduleDetailSerializer(serializers.ModelSerializer):
         # 이미 뷰에서는 유저존재여부를 검증했기때문에 반드시 존재한다고 보면됩니다.
         # 유저객체를 바로 가져옵시다.
         user = User.objects.filter(id=instance.userId).first()
-        # 이 유저객체를 위에서 정의한 운항스케쥴 유저정보 시리얼라이저에 넣습니디ㅏ.
+        # 이 유저객체를 위에서 정의한 운항스케쥴 유저정보 시리얼라이저에 넣습니다.
         result = AirScheduleDetailUserInfoSerializer(user, many=False).data
         return result
 
